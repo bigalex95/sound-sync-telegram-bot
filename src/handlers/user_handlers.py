@@ -23,6 +23,21 @@ async def cmd_start(message: types.Message):
         f"Daily Limit: {Config.MAX_USERS_DAILY_LIMIT} songs."
     )
 
+@router.message(F.text == "/my_limit")
+async def cmd_my_limit(message: types.Message):
+    """
+    Handler for /my_limit command.
+    """
+    user_id = message.from_user.id
+    usage_count = usage_tracker.get_user_usage(user_id)
+    remaining = Config.MAX_USERS_DAILY_LIMIT - usage_count
+    
+    await message.answer(
+        f"📊 **Daily Limit Status**\n"
+        f"Used: {usage_count}/{Config.MAX_USERS_DAILY_LIMIT}\n"
+        f"Remaining: {max(0, remaining)}"
+    )
+
 @router.message(F.text)
 async def handle_url(message: types.Message):
     """
@@ -77,18 +92,21 @@ async def handle_url(message: types.Message):
         # Update status
         await status_msg.edit_text("⬆️ Uploading...")
 
+        # Track Usage
+        file_size = os.path.getsize(file_path)
+        usage_tracker.track_usage(user_id, file_size)
+        
+        # Get updated usage for caption
+        usage_count = usage_tracker.get_user_usage(user_id)
+
         # Send audio
         audio_file = FSInputFile(file_path)
         await message.answer_audio(
             audio=audio_file,
-            caption=f"🎧 {title}",
+            caption=f"🎧 {title}\n\n📊 Daily Limit: {usage_count}/{Config.MAX_USERS_DAILY_LIMIT}",
             duration=duration,
             thumbnail=FSInputFile(thumbnail_url) if thumbnail_url and os.path.exists(thumbnail_url) else None
         )
-
-        # Track Usage
-        file_size = os.path.getsize(file_path)
-        usage_tracker.track_usage(user_id, file_size)
 
         # Cleanup
         await status_msg.delete()
