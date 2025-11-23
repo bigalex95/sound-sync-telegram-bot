@@ -1,36 +1,71 @@
-# 🎧 SoundSync Bot
+# 🐍 SoundSync: Python Engine
 
-**The Universal Bridge from Stream to File.**
+This branch contains the source code for the **Python** implementation of SoundSync. It uses `aiogram` for the Telegram interface and `yt-dlp` for the heavy lifting.
 
-## 🚀 Overview
+## 🛠 Tech Stack
 
-SoundSync is an open-source educational project demonstrating how to build a Telegram Bot that converts URLs (YouTube, SoundCloud, etc.) into MP3 files.
-
-This repository is unique because it provides **two completely different ways** to solve the same problem. This serves as a "Cheat Sheet" for the accompanying YouTube tutorial.
-
-## 📺 Video Tutorial
-
-**[Link to your YouTube Video Here]** _Learn the architecture, the code, and the automation in one video._
-
-## 📂 Choose Your Path
-
-|   |   |   |   |   |
-|---|---|---|---|---|
-|**Method**|**Technology**|**Difficulty**|**Best For**|**Branch**|
-|**1. The Code Engine**|Python, aiogram, yt-dlp, FFmpeg|⭐⭐⭐ (Hard)|Learning backend dev, full control, free hosting|[**Go to Python Branch**](https://www.google.com/search?q=https://github.com/yourusername/soundsync/tree/feature/python-engine "null")|
-|**2. The Workflow**|n8n / Make.com|⭐ (Easy)|Speed, automation fans, avoiding server maintenance|[**Go to n8n Branch**](https://www.google.com/search?q=https://github.com/yourusername/soundsync/tree/feature/n8n-automation "null")|
-
-## ✨ Features
-
-- **Universal Extraction:** Supports YouTube, SoundCloud, and hundreds of other sites via `yt-dlp`.
+- **Python 3.11+**
     
-- **Smart Metadata:** Automatically adds Artist, Title, and Thumbnail (Cover Art) to the MP3.
+- **aiogram 3.x:** Asynchronous Telegram framework.
     
-- **Asynchronous Processing:** Handles multiple users simultaneously without freezing.
+- **yt-dlp:** The command-line media downloader.
+    
+- **FFmpeg:** Required for audio conversion.
     
 
-## 🤝 Contributing
+## ⚡ Prerequisites
 
-Found a bug? Want to add Spotify API support? Feel free to open a PR on the `feature/python-engine` branch!
+1. **FFmpeg** must be installed on your system.
+    
+    - _Mac:_ `brew install ffmpeg`
+        
+    - _Ubuntu:_ `sudo apt install ffmpeg`
+        
+    - _Windows:_ [Download Here](https://ffmpeg.org/download.html "null") and add to PATH.
+        
+2. **Telegram Bot Token:** Get one from [@BotFather](https://t.me/botfather "null").
+    
 
-_Created for the [Channel Name] Community._
+## 📥 Installation
+
+1. **Clone this branch:**
+    
+    ```
+    git clone -b feature/python-engine [https://github.com/bigalex95/soundsync.git](https://github.com/bigalex95/soundsync.git)
+    cd soundsync
+    ```
+    
+2. **Set up Virtual Environment:**
+    
+    ```
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+    
+3. **Install Dependencies:**
+    
+    ```
+    pip install -r requirements.txt
+    ```
+    
+4. **Configuration:** Rename `.env.example` to `.env` and add your token:
+    
+    ```
+    BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
+    ```
+    
+
+## 🚀 Running the Bot
+
+```
+python src/main.py
+```
+
+## 🐳 Docker Support
+
+Don't want to install FFmpeg manually? Use Docker.
+
+```
+docker build -t soundsync .
+docker run --env-file .env soundsync
+```
