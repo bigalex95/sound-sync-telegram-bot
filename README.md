@@ -16,6 +16,7 @@ Prefer a **No-Code** solution? Check out the [n8n implementation](n8n/README.md)
 
 - [Development Guide](docs/development.md): How to run the bot locally.
 - [Deployment Guide](docs/deployment.md): How to push to Docker Hub and deploy on a server.
+- [GCP Free Tier Guide](docs/gcp-free-tier.md): Step-by-step guide for Google Cloud Always Free tier.
 
 ## Quick Start (Docker)
 

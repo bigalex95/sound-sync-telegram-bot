@@ -8,6 +8,9 @@ This guide covers how to deploy the **SoundSync Bot** using Docker Hub and a Lin
 2.  **Linux Server**: A VPS (e.g., DigitalOcean, AWS, Hetzner) with SSH access.
 3.  **Docker Installed**: Both on your local machine and the server.
 
+> [!TIP]
+> Want to host for **free**? Check out our [GCP Always Free Tier Guide](gcp-free-tier.md).
+
 ---
 
 ## Part 1: Push to Docker Hub
