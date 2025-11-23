@@ -4,10 +4,13 @@ from aiogram.filters import CommandStart
 from aiogram.types import FSInputFile
 from src.services.downloader import Downloader
 from src.services.cleaner import Cleaner
+from src.services.usage_tracker import UsageTracker
+from src.config import Config
 from src.utils.helpers import is_valid_url, is_spotify_url
 
 router = Router()
 downloader = Downloader()
+usage_tracker = UsageTracker()
 
 @router.message(CommandStart())
 async def cmd_start(message: types.Message):
@@ -16,7 +19,8 @@ async def cmd_start(message: types.Message):
     """
     await message.answer(
         "👋 Hello! I'm SoundSync Bot.\n\n"
-        "Send me a link from YouTube, SoundCloud, etc., and I'll send you the MP3."
+        "Send me a link from YouTube, SoundCloud, etc., and I'll send you the MP3.\n"
+        f"Daily Limit: {Config.MAX_USERS_DAILY_LIMIT} songs."
     )
 
 @router.message(F.text)
@@ -24,6 +28,7 @@ async def handle_url(message: types.Message):
     """
     Handler for text messages (URLs).
     """
+    user_id = message.from_user.id
     url = message.text.strip()
 
     if not is_valid_url(url):
@@ -34,6 +39,23 @@ async def handle_url(message: types.Message):
         await message.answer(
             "🎵 Spotify links are not fully supported in this MVP.\n"
             "Please use YouTube or SoundCloud links for now."
+        )
+        return
+
+    # Check Global Limit
+    if not usage_tracker.can_global_download():
+        await message.answer(
+            "⚠️ Service temporarily unavailable.\n"
+            "The bot has reached its monthly traffic limit. Please try again next month."
+        )
+        return
+
+    # Check User Limit
+    if not usage_tracker.can_user_download(user_id):
+        usage_count = usage_tracker.get_user_usage(user_id)
+        await message.answer(
+            f"⚠️ You have reached your daily limit ({usage_count}/{Config.MAX_USERS_DAILY_LIMIT}).\n"
+            "Please come back tomorrow!"
         )
         return
 
@@ -63,6 +85,10 @@ async def handle_url(message: types.Message):
             duration=duration,
             thumbnail=FSInputFile(thumbnail_url) if thumbnail_url and os.path.exists(thumbnail_url) else None
         )
+
+        # Track Usage
+        file_size = os.path.getsize(file_path)
+        usage_tracker.track_usage(user_id, file_size)
 
         # Cleanup
         await status_msg.delete()
