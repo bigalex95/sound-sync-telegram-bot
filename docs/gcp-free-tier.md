@@ -110,3 +110,68 @@ docker logs -f sound-sync-telegram-bot
 
 *   **Network Egress**: You get 1GB of network egress from North America to all region destinations (excluding China and Australia) per month. Since this is a Telegram bot, bandwidth usage should be low, but keep an eye on it if you process massive files.
 *   **CPU Usage**: `e2-micro` instances are burstable. Sustained high CPU usage might be throttled, but it's usually fine for a bot like this.
+
+---
+
+## Optional: Enable GCP Network Monitoring
+
+The bot can show **actual GCP network usage** in the `/global_limit` command by integrating with GCP Cloud Monitoring. This gives you accurate tracking against the 1GB free tier limit.
+
+### Benefits
+
+- See real network egress from your GCP instance
+- Compare local file tracking vs actual network usage
+- Get accurate data aligned with GCP billing
+
+### Setup
+
+Since your bot runs on a GCP Compute Engine instance, it automatically has access to GCP APIs through **Application Default Credentials**. No credential files needed!
+
+#### 1. Get Your Instance Information
+
+You need three pieces of information. Run these commands in your SSH terminal:
+
+```bash
+# Get Project ID
+gcloud config get-value project
+
+# Get Instance ID (numeric ID, not the name)
+curl -H "Metadata-Flavor: Google" \
+  http://metadata.google.internal/computeMetadata/v1/instance/id
+
+# Get Zone
+curl -H "Metadata-Flavor: Google" \
+  http://metadata.google.internal/computeMetadata/v1/instance/zone | cut -d'/' -f4
+```
+
+#### 2. Update Your .env File
+
+Add these variables to your `.env` file:
+
+```bash
+nano .env
+```
+
+Add the following (replace with your actual values):
+
+```bash
+# GCP Monitoring (Optional)
+GCP_PROJECT_ID=your-project-id
+GCP_INSTANCE_ID=1234567890123456789
+GCP_ZONE=us-central1-a
+```
+
+#### 3. Restart the Bot
+
+```bash
+docker restart sound-sync-telegram-bot
+```
+
+#### 4. Verify
+
+Test the `/global_limit` command in Telegram. You should now see two sections:
+- **Local Tracking**: File sizes tracked by the bot
+- **Actual GCP Network**: Real network egress from GCP
+
+> [!NOTE]
+> Your instance already has the necessary permissions (Editor role includes Monitoring Viewer). No additional IAM configuration needed!

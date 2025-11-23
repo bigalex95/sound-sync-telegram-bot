@@ -55,12 +55,33 @@ async def cmd_global_limit(message: types.Message):
             size /= power
             n += 1
         return f"{size:.2f} {power_labels[n]}B"
-
-    await message.answer(
-        f"🌍 **Global Traffic Status**\n"
-        f"Used: {format_bytes(total_bytes)} / {format_bytes(limit_bytes)}\n"
-        f"Reset: First day of next month"
+    
+    # Try to get GCP metrics if configured
+    from src.services.gcp_monitor import GCPMonitor
+    gcp_monitor = GCPMonitor(
+        project_id=Config.GCP_PROJECT_ID,
+        instance_id=Config.GCP_INSTANCE_ID,
+        zone=Config.GCP_ZONE
     )
+    
+    response = f"🌍 **Global Traffic Status**\n\n"
+    
+    # Show local tracking (file-based)
+    response += f"📦 **Local Tracking** (File sizes):\n"
+    response += f"Used: {format_bytes(total_bytes)} / {format_bytes(limit_bytes)}\n"
+    
+    # Show GCP metrics if available
+    if gcp_monitor.is_configured():
+        gcp_bytes = gcp_monitor.get_network_egress()
+        if gcp_bytes is not None:
+            response += f"\n🌐 **Actual GCP Network** (This month):\n"
+            response += f"Egress: {format_bytes(gcp_bytes)} / 1.00 GB (Free tier)\n"
+        else:
+            response += f"\n⚠️ GCP monitoring configured but unable to fetch metrics\n"
+    
+    response += f"\n🔄 Reset: First day of next month"
+
+    await message.answer(response)
 
 @router.message(F.text == "/help")
 async def cmd_help(message: types.Message):

@@ -20,3 +20,8 @@ class Config:
     
     # Database
     DB_PATH = os.getenv("DB_PATH", "data/bot_data.db")
+    
+    # GCP Monitoring (Optional - for accurate network tracking)
+    GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
+    GCP_INSTANCE_ID = os.getenv("GCP_INSTANCE_ID")
+    GCP_ZONE = os.getenv("GCP_ZONE")

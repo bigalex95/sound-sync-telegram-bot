@@ -31,6 +31,7 @@ class TestGlobalLimit(unittest.IsolatedAsyncioTestCase):
         args, _ = message.answer.call_args
         response_text = args[0]
         self.assertIn("Used: 0.00 B", response_text)
+        self.assertIn("Local Tracking", response_text)  # Should show local tracking section
 
         # Simulate usage (e.g., 150 MB)
         # 150 * 1024 * 1024 = 157286400 bytes
@@ -42,6 +43,7 @@ class TestGlobalLimit(unittest.IsolatedAsyncioTestCase):
         args, _ = message.answer.call_args
         response_text = args[0]
         self.assertIn("Used: 150.00 MB", response_text)
+        self.assertIn("Local Tracking", response_text)
 
 if __name__ == '__main__':
     unittest.main()
