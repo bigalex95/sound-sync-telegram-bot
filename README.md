@@ -1,71 +1,58 @@
-# 🐍 SoundSync: Python Engine
+# ⚡ SoundSync: n8n Workflow
 
-This branch contains the source code for the **Python** implementation of SoundSync. It uses `aiogram` for the Telegram interface and `yt-dlp` for the heavy lifting.
+This branch contains the JSON blueprint for the **No-Code** implementation of SoundSync.
 
-## 🛠 Tech Stack
+## 🧩 How it Works
 
-- **Python 3.11+**
+Instead of processing the file on our own server, this workflow:
+
+1. Receives a webhook from Telegram.
     
-- **aiogram 3.x:** Asynchronous Telegram framework.
+2. Sends the URL to a 3rd Party API (RapidAPI/Cobalt).
     
-- **yt-dlp:** The command-line media downloader.
+3. Receives the binary file.
     
-- **FFmpeg:** Required for audio conversion.
+4. Uploads it back to Telegram.
     
 
-## ⚡ Prerequisites
+## 🛠 Tools Required
 
-1. **FFmpeg** must be installed on your system.
+- **n8n:** Self-hosted or Cloud version.
     
-    - _Mac:_ `brew install ffmpeg`
+- **Telegram Bot Token:** From [@BotFather](https://t.me/botfather "null").
+    
+- **RapidAPI Key (Optional):** If using a premium downloader API.
+    
+
+## 📥 Import Instructions
+
+1. **Download the Workflow:**
+    
+    - Locate the `soundsync_workflow.json` file in this repository.
         
-    - _Ubuntu:_ `sudo apt install ffmpeg`
+2. **Import to n8n:**
+    
+    - Open your n8n Editor.
         
-    - _Windows:_ [Download Here](https://ffmpeg.org/download.html "null") and add to PATH.
+    - Click "Workflow" (top left) -> "Import from File".
         
-2. **Telegram Bot Token:** Get one from [@BotFather](https://t.me/botfather "null").
+    - Select `soundsync_workflow.json`.
+        
+3. **Configure Credentials:**
     
+    - Double click the **Telegram Trigger** node.
+        
+    - Create a new Credential and paste your Bot Token.
+        
+    - Repeat for the **HTTP Request** node if using an API Key.
+        
+4. **Activate:**
+    
+    - Toggle the "Active" switch to ON.
+        
 
-## 📥 Installation
+## ⚠️ Limitations
 
-1. **Clone this branch:**
+- File size is limited by the n8n memory and Telegram Bot API (50MB).
     
-    ```
-    git clone -b feature/python-engine [https://github.com/bigalex95/soundsync.git](https://github.com/bigalex95/soundsync.git)
-    cd soundsync
-    ```
-    
-2. **Set up Virtual Environment:**
-    
-    ```
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
-    
-3. **Install Dependencies:**
-    
-    ```
-    pip install -r requirements.txt
-    ```
-    
-4. **Configuration:** Rename `.env.example` to `.env` and add your token:
-    
-    ```
-    BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
-    ```
-    
-
-## 🚀 Running the Bot
-
-```
-python src/main.py
-```
-
-## 🐳 Docker Support
-
-Don't want to install FFmpeg manually? Use Docker.
-
-```
-docker build -t soundsync .
-docker run --env-file .env soundsync
-```
+- Dependency on external APIs means if they go down, the bot goes down.
