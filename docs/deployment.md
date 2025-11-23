@@ -114,3 +114,17 @@ This usually means you are not logged in correctly or don't have permission.
 2.  Run `docker login` and enter your username and password/token again.
 3.  Ensure you are pushing to `your-username/repo-name`.
 
+## Automated Deployment (CI/CD)
+
+We have included a GitHub Actions workflow (`.github/workflows/docker-publish.yml`) that automatically builds and pushes the Docker image whenever you push to the repository.
+
+### Setup Secrets
+To make this work, you must add your Docker Hub credentials to your GitHub Repository Secrets:
+
+1.  Go to your repository on GitHub.
+2.  Navigate to **Settings** > **Secrets and variables** > **Actions**.
+3.  Click **New repository secret**.
+4.  Add the following two secrets:
+    *   `DOCKER_USERNAME`: Your Docker Hub username (e.g., `bigalex95`).
+    *   `DOCKER_PASSWORD`: Your Docker Hub password (or Access Token).
+
