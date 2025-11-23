@@ -91,3 +91,18 @@ class UsageTracker:
         conn.close()
         
         return count
+
+    def get_global_usage(self) -> int:
+        """Get the total bytes used by the bot this month."""
+        start_of_month = self._get_start_of_month_timestamp()
+        
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT SUM(file_size_bytes) FROM usage_logs
+            WHERE timestamp >= ?
+        """, (start_of_month,))
+        result = cursor.fetchone()[0]
+        conn.close()
+        
+        return result if result else 0

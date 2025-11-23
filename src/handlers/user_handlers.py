@@ -38,6 +38,30 @@ async def cmd_my_limit(message: types.Message):
         f"Remaining: {max(0, remaining)}"
     )
 
+@router.message(F.text == "/global_limit")
+async def cmd_global_limit(message: types.Message):
+    """
+    Handler for /global_limit command.
+    """
+    total_bytes = usage_tracker.get_global_usage()
+    limit_bytes = Config.MAX_GLOBAL_MONTHLY_BYTES
+    
+    # Convert to MB/GB for display
+    def format_bytes(size):
+        power = 2**10
+        n = 0
+        power_labels = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
+        while size > power:
+            size /= power
+            n += 1
+        return f"{size:.2f} {power_labels[n]}B"
+
+    await message.answer(
+        f"🌍 **Global Traffic Status**\n"
+        f"Used: {format_bytes(total_bytes)} / {format_bytes(limit_bytes)}\n"
+        f"Reset: First day of next month"
+    )
+
 @router.message(F.text)
 async def handle_url(message: types.Message):
     """
