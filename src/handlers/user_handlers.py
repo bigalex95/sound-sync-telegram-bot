@@ -62,6 +62,34 @@ async def cmd_global_limit(message: types.Message):
         f"Reset: First day of next month"
     )
 
+@router.message(F.text == "/help")
+async def cmd_help(message: types.Message):
+    """
+    Handler for /help command.
+    """
+    await message.answer(
+        "📚 **How to use SoundSync Bot**\n\n"
+        "1. **Send a link**: Just paste a URL from YouTube, SoundCloud, or other supported sites.\n"
+        "2. **Wait**: The bot will download, convert, and send you the MP3.\n\n"
+        "**Commands**:\n"
+        "/my_limit - Check your daily download limit\n"
+        "/global_limit - Check the bot's total monthly traffic\n"
+        "/about - Bot information and source code"
+    )
+
+@router.message(F.text == "/about")
+async def cmd_about(message: types.Message):
+    """
+    Handler for /about command.
+    """
+    await message.answer(
+        "ℹ️ **About SoundSync Bot**\n\n"
+        "A simple Telegram bot to download audio from various platforms.\n\n"
+        "**Version**: 1.0\n"
+        "**Developer**: @bigalex95\n"
+        "**Source Code**: [GitHub Repository](https://github.com/bigalex95/sound-sync-telegram-bot)"
+    )
+
 @router.message(F.text)
 async def handle_url(message: types.Message):
     """
