@@ -9,6 +9,9 @@
 - ⚡ **Asynchronous**: Handles downloads in the background without freezing.
 - 🐳 **Docker Ready**: Easy to deploy using Docker.
 
+## 🧩 Alternative: n8n Workflow
+Prefer a **No-Code** solution? Check out the [n8n implementation](n8n/README.md) in the `n8n/` folder.
+
 ## Documentation
 
 - [Development Guide](docs/development.md): How to run the bot locally.
